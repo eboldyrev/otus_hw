@@ -36,7 +36,7 @@ public class TestRunner {
                 System.out.printf("All %d tests finished: passed: %d, FAILED: %d, ERROR: %d%n", nr, passed, failed, error);
                 return;
             }
-
+            System.out.print("Test "+nr+" took ");
             TestResult testResult = runTest(inFileName, outFileName);
             switch (testResult) {
                 case Passed -> passed++;
@@ -44,7 +44,7 @@ public class TestRunner {
                 case Error -> error++;
             }
 
-            System.out.println("Test "+nr+" : " + testResult.name());
+            System.out.println(" | Result : " + testResult.name());
             nr++;
         }
     }
@@ -54,7 +54,10 @@ public class TestRunner {
             List<String> inStrings = Files.readAllLines(inFile);
             List<String> expected = Files.readAllLines(outFile);
 
+            long b = System.nanoTime();
             List<String> actual = testable.runTest(inStrings);
+            long e = System.nanoTime();
+            System.out.print((e - b) / 1_000_000 + " ms");
 
             return Objects.equals(expected, actual)? TestResult.Passed : TestResult.Failed;
         } catch (Exception e) {
