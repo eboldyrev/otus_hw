@@ -46,6 +46,47 @@ public class SortsMarket {
         return null;
     }
 
+    public Void selectionSort() {
+        for (int j = N - 1; j > 0; j--) {
+            swap(findMax(j), j);
+        }
+        return null;
+    }
+
+    public Void heapSort() {
+        for (int root = A.length/2 - 1; root >= 0; root--) {
+            heapify(root, A.length);
+        }
+
+        for (int j = A.length - 1; j > 0; j--) {
+            swap(0, j);
+            heapify(0, j);
+        }
+
+        return null;
+    }
+
+    private void heapify(int root, int length) {
+        int L = 2 * root + 1;
+        int R = L + 1;
+
+        int X = root;
+        if (L < length && A[L] > A[X]) X = L;
+        if (R < length && A[R] > A[X]) X = R;
+        if (X == root) return;
+        swap(X, root);
+        heapify(X, length);
+    }
+
+    private int findMax(int j) {
+        int maxIdx = 0;
+        for (int i = 1; i < j; i++) {
+            if (greater(A[i], A[maxIdx]))
+                maxIdx = i;
+        }
+        return maxIdx;
+    }
+
     public Void insertionSort() {
         for (int j = 1; j < N; j++) {
             for (int i = j - 1; i >= 0 && greater(A[i], A[i + 1]); i--) {
@@ -139,21 +180,30 @@ public class SortsMarket {
 
     public static void main(String[] args) {
 //        int[] A = {5, 3, 7, 4, 2, 9, 1, 0, 6, 8};
+//        int[] A = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-        for (int s = 10; s <= 10_000; s*=10) {
+        for (int s = 100; s <= 1_000_000; s*=10) {
             int[] A = generateRandom(s);
 
             SortsMarket sortsMarket = new SortsMarket(A);
-            System.out.printf("Bubble sort | Array size: %d | ", s);
-            sortsMarket.measure(sortsMarket::bubbleSort);
+//            System.out.printf("Bubble sort | Array size: %d | ", s);
+//            sortsMarket.measure(sortsMarket::bubbleSort);
 
-            System.out.printf("Insertion sort | Array size: %d |", s);
-            sortsMarket.setData(A);
-            sortsMarket.measure(sortsMarket::insertionSort);
+//            System.out.printf("Insertion sort | Array size: %d |", s);
+//            sortsMarket.setData(A);
+//            sortsMarket.measure(sortsMarket::insertionSort);
 
-            System.out.printf("Shell sort | Array size: %d | ", s);
+//            System.out.printf("Shell sort | Array size: %d | ", s);
+//            sortsMarket.setData(A);
+//            sortsMarket.measure(sortsMarket::shellSort);
+
+            System.out.printf("Selection sort | Array size: %d | ", s);
             sortsMarket.setData(A);
-            sortsMarket.measure(sortsMarket::shellSort);
+            sortsMarket.measure(sortsMarket::selectionSort);
+
+            System.out.printf("Heap sort | Array size: %d | ", s);
+            sortsMarket.setData(A);
+            sortsMarket.measure(sortsMarket::heapSort);
         }
     }
 }
