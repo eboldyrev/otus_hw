@@ -1,6 +1,8 @@
 package eugene.boldyrev._8_simple_sorts;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -18,7 +20,7 @@ public class SortsMarket {
         A = new int[N];
     }
 
-    public void setData(int[] A){
+    public void setData(int[] A) {
         initData(A);
     }
 
@@ -28,10 +30,18 @@ public class SortsMarket {
     }
 
     public static int[] generateRandom(int N) {
-        Random random = new Random(12345);
+        Random random = new Random(728293);
         int[] A = new int[N];
         for (int i = 0; i < N; i++) {
             A[i] = random.nextInt();
+        }
+        return A;
+    }
+    public static List<String> generateRandomStrings(int N, int maxValue) {
+        Random random = new Random(728293);
+        List<String> A = new ArrayList<>(N);
+        for (int i = 0; i < N; i++) {
+            A.add(random.nextInt(maxValue) + "");
         }
         return A;
     }
@@ -54,7 +64,7 @@ public class SortsMarket {
     }
 
     public Void heapSort() {
-        for (int root = A.length/2 - 1; root >= 0; root--) {
+        for (int root = A.length / 2 - 1; root >= 0; root--) {
             heapify(root, A.length);
         }
 
@@ -121,7 +131,7 @@ public class SortsMarket {
         return null;
     }
 
-    public Void shellSort(){
+    public Void shellSort() {
 //        printArray(A);
         for (int gap = N / 2; gap > 0; gap /= 2) {
 //            System.out.printf("Gap = %d\n", gap);
@@ -136,11 +146,75 @@ public class SortsMarket {
         return null;
     }
 
+    public Void quickSort() {
+        qSort(0, N - 1);
+        return null;
+    }
+
+    private void qSort(int L, int R) {
+        if (L >= R) return;
+        int M = split(L, R);
+        qSort(L, M - 1);
+        qSort(M + 1, R);
+    }
+
+    private int split(int L, int R) {
+        int P = A[R]; // pivot element
+        int M = L - 1; // end of array part <=P
+
+        for (int j = L; j <= R; j++) {
+            if (greaterOrEqual(P, A[j])) {
+                swap(++M, j);
+            }
+        }
+        return M;
+    }
+
+    public Void mergeSort() {
+        mSort(0, N - 1);
+        return null;
+    }
+
+    private void mSort(int L, int R) {
+        if (L >= R) return;
+        int M = (L + R) / 2;
+        mSort(L, M);
+        mSort(M + 1, R);
+        merge(L, M, R);
+    }
+
+    private void merge(int L, int M, int R){
+        int[] tmp = new int[R - L + 1];
+        int a = L;
+        int b = M + 1;
+        int m = 0;
+
+        while (a <= M && b <= R) {
+            if (greater(A[a], A[b]))  {
+                tmp[m++] = A[b++];
+            } else {
+                tmp[m++] = A[a++];
+            }
+        }
+
+        while (a <= M) {
+            tmp[m++] = A[a++];
+        }
+
+        while (b <= R) {
+            tmp[m++] = A[b++];
+        }
+
+        for (int i = L; i < R; i++) {
+            A[i] = tmp[i - L];
+        }
+    }
+
     public void measure(Supplier<Void> algo) {
         long s = System.nanoTime();
         algo.get();
         long e = System.nanoTime();
-        System.out.printf("It took %d ms\n", (e - s)/ 1_000_00);
+        System.out.printf("%d ms\n", (e - s) / 1_000_000);
     }
 
     private int binarySearch(int key, int low, int high) {
@@ -170,19 +244,33 @@ public class SortsMarket {
         return e1 > e2;
     }
 
-    private void printArray(int[] A){
+    private boolean greaterOrEqual(int e1, int e2) {
+        return e1 >= e2;
+    }
+
+    private void printArray(int[] A) {
         for (int e : A) {
             System.out.printf("%d ", e);
         }
         System.out.print("\n");
     }
 
+    private void printArray() {
+        for (int e : A) {
+            System.out.printf("%d ", e);
+        }
+        System.out.print("\n");
+    }
 
     public static void main(String[] args) {
 //        int[] A = {5, 3, 7, 4, 2, 9, 1, 0, 6, 8};
-//        int[] A = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+//        int[] A = {7, 3, 2, 9, 5, 0, 4, 8, 1};
+//
+//        SortsMarket sortsMarket = new SortsMarket(A);
+//        sortsMarket.quickSort();
+//        sortsMarket.printArray();
 
-        for (int s = 100; s <= 1_000_000; s*=10) {
+        for (int s = 100; s <= 10_000_000; s *= 10) {
             int[] A = generateRandom(s);
 
             SortsMarket sortsMarket = new SortsMarket(A);
@@ -197,13 +285,22 @@ public class SortsMarket {
 //            sortsMarket.setData(A);
 //            sortsMarket.measure(sortsMarket::shellSort);
 
-            System.out.printf("Selection sort | Array size: %d | ", s);
+//            System.out.printf("Selection sort | Array size: %d | ", s);
+//            sortsMarket.setData(A);
+//            sortsMarket.measure(sortsMarket::selectionSort);
+//
+//            System.out.printf("Heap sort | Array size: %d | ", s);
+//            sortsMarket.setData(A);
+//            sortsMarket.measure(sortsMarket::heapSort);
+//
+            System.out.printf("Quick sort | Array size: %d | ", s);
             sortsMarket.setData(A);
-            sortsMarket.measure(sortsMarket::selectionSort);
+            sortsMarket.measure(sortsMarket::quickSort);
 
-            System.out.printf("Heap sort | Array size: %d | ", s);
+            System.out.printf("Merge sort | Array size: %d | ", s);
             sortsMarket.setData(A);
-            sortsMarket.measure(sortsMarket::heapSort);
+            sortsMarket.measure(sortsMarket::mergeSort);
+
         }
     }
 }
