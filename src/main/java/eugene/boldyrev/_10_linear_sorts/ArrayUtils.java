@@ -9,8 +9,8 @@ public class ArrayUtils {
 
     public static void print(int[] arr){
         System.out.print("A = [");
-        for (int i = 0; i < arr.length; i++) {
-            System.out.printf("%d ", arr[i]);
+        for (int j : arr) {
+            System.out.printf("%d ", j);
         }
         System.out.print("]");
         System.out.println();
@@ -33,6 +33,7 @@ public class ArrayUtils {
         return A;
     }
 
+    @SuppressWarnings("unused")
     public static int[] descendingOrder(int count){
         int[] A = new int[count];
         for (int i = 0; i < count; i++) {
@@ -41,6 +42,12 @@ public class ArrayUtils {
         return A;
     }
 
+    public static void measure(String msg, Runnable runnable) {
+        long b = System.nanoTime();
+        runnable.run();
+        long e = System.nanoTime();
+        System.out.printf(msg + " %d ms (%d ns) \n", (e - b) / 1_000_000, (e - b));
+    }
 
 
 }
