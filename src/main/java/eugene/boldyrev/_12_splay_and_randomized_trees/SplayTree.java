@@ -1,4 +1,4 @@
-package eugene.boldyrev._11_binary_search_tree;
+package eugene.boldyrev._12_splay_and_randomized_trees;
 
 public class SplayTree {
 
